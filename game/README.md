@@ -1,20 +1,35 @@
-# Probe.exe Unity Game Shell
+# Probe.exe Unity Project Scaffold
 
-This folder contains the first Unity script layer for Probe.exe: File Quest.
+This folder is prepared to become the Unity game shell for Probe.exe: File Quest.
 
-Current purpose:
-- Load `.probe/game-map.json`
-- Parse the scanner output into Unity C# data models
-- Spawn zones and file rooms as primitive blocks
-- Attach runtime room metadata
-- Prepare the scene for the orb scanner UI
+Current status:
+- Scanner brain lives in `/scanner`
+- Unity game shell lives in `/game`
+- Unity scripts are in `/game/Assets/Scripts`
+- Sample scanner bridge file is in `/game/Assets/StreamingAssets/probe-game-map.sample.json`
 
-First Unity scene setup:
-1. Create or open a Unity 2D project using this `game` folder.
-2. Add an empty GameObject named `ProbeGame`.
-3. Attach `FileQuestBootstrap` to `ProbeGame`.
-4. Copy a generated `.probe/game-map.json` into `Assets/StreamingAssets/probe-game-map.sample.json`.
-5. Press Play.
-6. Unity should spawn zones and rooms from the scanner output.
+Unity install status:
+- Unity Hub was not found on this machine during the latest probe.
+- Once Unity Hub is installed, open this `/game` folder as the Unity project.
+
+Recommended Unity setup:
+1. Open Unity Hub.
+2. Choose Add project from disk.
+3. Select:
+   C:\Users\smief654\Desktop\ProbeExe\game
+4. Open with a Unity 2022.3 LTS editor or newer compatible editor.
+5. Create a new 2D scene named:
+   FileQuestPrototype
+6. Add an empty GameObject named:
+   ProbeGame
+7. Attach:
+   FileQuestBootstrap
+8. Press Play.
+
+Expected result:
+- Unity loads `Assets/StreamingAssets/probe-game-map.sample.json`
+- Zones spawn vertically
+- File rooms spawn horizontally
+- Clicking a room logs room metadata in the Unity console
 
 The scanner remains the source of truth. Unity is the playable viewer.
