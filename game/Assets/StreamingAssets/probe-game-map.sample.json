@@ -1,0 +1,618 @@
+{
+  "gameTitle": "Probe.exe: File Quest",
+  "schemaVersion": "0.1.0",
+  "generatedAt": "2026-05-27T16:40:57.808Z",
+  "rootPath": "C:/Users/smief654/Desktop/ProbeExe",
+  "summary": {
+    "foldersScanned": 9,
+    "filesScanned": 19,
+    "routesFound": 0,
+    "componentsFound": 0,
+    "risksFound": 3,
+    "xpEarned": 454,
+    "level": 1
+  },
+  "playerStart": {
+    "zoneId": "zone-game",
+    "roomId": "room-game-readme-md"
+  },
+  "legend": {
+    "folder": "zone",
+    "file": "room",
+    "route": "portal room",
+    "component": "machine room",
+    "environment": "vault room",
+    "config": "control room",
+    "documentation": "archive room",
+    "asset": "relic room",
+    "finding": "encounter",
+    "risk": "hazard"
+  },
+  "zones": [
+    {
+      "id": "zone-game",
+      "name": "game",
+      "path": "game",
+      "level": 1,
+      "roomCount": 1,
+      "riskCount": 0,
+      "landmarkCount": 1,
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rooms": [
+        {
+          "id": "room-game-readme-md",
+          "name": "README.md",
+          "path": "game/README.md",
+          "folder": "game",
+          "role": "documentation",
+          "roomType": "archive-room",
+          "landmark": true,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 35,
+          "rewardType": "archive-intel",
+          "lineCount": 21,
+          "importCount": 0,
+          "exportCount": 0,
+          "signals": [],
+          "findingsCount": 0,
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "zone-game-assets-scripts-core",
+      "name": "game/Assets/Scripts/Core",
+      "path": "game/Assets/Scripts/Core",
+      "level": 4,
+      "roomCount": 2,
+      "riskCount": 0,
+      "landmarkCount": 0,
+      "position": {
+        "x": 18,
+        "y": 0
+      },
+      "rooms": [
+        {
+          "id": "room-game-assets-scripts-core-filequestbootstrap-cs",
+          "name": "FileQuestBootstrap.cs",
+          "path": "game/Assets/Scripts/Core/FileQuestBootstrap.cs",
+          "folder": "game/Assets/Scripts/Core",
+          "role": "unknown",
+          "roomType": "unmapped-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 5,
+          "rewardType": "scan-xp",
+          "lineCount": 0,
+          "importCount": 0,
+          "exportCount": 0,
+          "signals": [
+            "skipped: non-text or unsupported extension"
+          ],
+          "findingsCount": 0,
+          "position": {
+            "x": 0,
+            "y": -3
+          }
+        },
+        {
+          "id": "room-game-assets-scripts-core-probegamemaploader-cs",
+          "name": "ProbeGameMapLoader.cs",
+          "path": "game/Assets/Scripts/Core/ProbeGameMapLoader.cs",
+          "folder": "game/Assets/Scripts/Core",
+          "role": "unknown",
+          "roomType": "unmapped-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 5,
+          "rewardType": "scan-xp",
+          "lineCount": 0,
+          "importCount": 0,
+          "exportCount": 0,
+          "signals": [
+            "skipped: non-text or unsupported extension"
+          ],
+          "findingsCount": 0,
+          "position": {
+            "x": 5,
+            "y": -3
+          }
+        }
+      ]
+    },
+    {
+      "id": "zone-game-assets-scripts-data",
+      "name": "game/Assets/Scripts/Data",
+      "path": "game/Assets/Scripts/Data",
+      "level": 4,
+      "roomCount": 1,
+      "riskCount": 0,
+      "landmarkCount": 0,
+      "position": {
+        "x": 36,
+        "y": 0
+      },
+      "rooms": [
+        {
+          "id": "room-game-assets-scripts-data-probegamemapdata-cs",
+          "name": "ProbeGameMapData.cs",
+          "path": "game/Assets/Scripts/Data/ProbeGameMapData.cs",
+          "folder": "game/Assets/Scripts/Data",
+          "role": "unknown",
+          "roomType": "unmapped-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 5,
+          "rewardType": "scan-xp",
+          "lineCount": 0,
+          "importCount": 0,
+          "exportCount": 0,
+          "signals": [
+            "skipped: non-text or unsupported extension"
+          ],
+          "findingsCount": 0,
+          "position": {
+            "x": 0,
+            "y": -6
+          }
+        }
+      ]
+    },
+    {
+      "id": "zone-game-assets-scripts-runtime",
+      "name": "game/Assets/Scripts/Runtime",
+      "path": "game/Assets/Scripts/Runtime",
+      "level": 4,
+      "roomCount": 2,
+      "riskCount": 0,
+      "landmarkCount": 0,
+      "position": {
+        "x": 54,
+        "y": 0
+      },
+      "rooms": [
+        {
+          "id": "room-game-assets-scripts-runtime-proberoomruntime-cs",
+          "name": "ProbeRoomRuntime.cs",
+          "path": "game/Assets/Scripts/Runtime/ProbeRoomRuntime.cs",
+          "folder": "game/Assets/Scripts/Runtime",
+          "role": "unknown",
+          "roomType": "unmapped-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 5,
+          "rewardType": "scan-xp",
+          "lineCount": 0,
+          "importCount": 0,
+          "exportCount": 0,
+          "signals": [
+            "skipped: non-text or unsupported extension"
+          ],
+          "findingsCount": 0,
+          "position": {
+            "x": 0,
+            "y": -9
+          }
+        },
+        {
+          "id": "room-game-assets-scripts-runtime-probezonespawner-cs",
+          "name": "ProbeZoneSpawner.cs",
+          "path": "game/Assets/Scripts/Runtime/ProbeZoneSpawner.cs",
+          "folder": "game/Assets/Scripts/Runtime",
+          "role": "unknown",
+          "roomType": "unmapped-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 5,
+          "rewardType": "scan-xp",
+          "lineCount": 0,
+          "importCount": 0,
+          "exportCount": 0,
+          "signals": [
+            "skipped: non-text or unsupported extension"
+          ],
+          "findingsCount": 0,
+          "position": {
+            "x": 5,
+            "y": -9
+          }
+        }
+      ]
+    },
+    {
+      "id": "zone-root",
+      "name": "root",
+      "path": "root",
+      "level": 1,
+      "roomCount": 1,
+      "riskCount": 0,
+      "landmarkCount": 0,
+      "position": {
+        "x": 72,
+        "y": 0
+      },
+      "rooms": [
+        {
+          "id": "room-gitignore",
+          "name": ".gitignore",
+          "path": ".gitignore",
+          "folder": "",
+          "role": "unknown",
+          "roomType": "unmapped-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 5,
+          "rewardType": "scan-xp",
+          "lineCount": 0,
+          "importCount": 0,
+          "exportCount": 0,
+          "signals": [
+            "skipped: non-text or unsupported extension"
+          ],
+          "findingsCount": 0,
+          "position": {
+            "x": 0,
+            "y": -12
+          }
+        }
+      ]
+    },
+    {
+      "id": "zone-scanner",
+      "name": "scanner",
+      "path": "scanner",
+      "level": 1,
+      "roomCount": 3,
+      "riskCount": 1,
+      "landmarkCount": 2,
+      "position": {
+        "x": 90,
+        "y": 0
+      },
+      "rooms": [
+        {
+          "id": "room-scanner-package-lock-json",
+          "name": "package-lock.json",
+          "path": "scanner/package-lock.json",
+          "folder": "scanner",
+          "role": "unknown",
+          "roomType": "unmapped-room",
+          "landmark": false,
+          "riskLevel": "low",
+          "difficulty": 6,
+          "xpValue": 26,
+          "rewardType": "risk-intel",
+          "lineCount": 567,
+          "importCount": 0,
+          "exportCount": 0,
+          "signals": [
+            "large-source-room"
+          ],
+          "findingsCount": 1,
+          "position": {
+            "x": 0,
+            "y": -15
+          }
+        },
+        {
+          "id": "room-scanner-package-json",
+          "name": "package.json",
+          "path": "scanner/package.json",
+          "folder": "scanner",
+          "role": "package",
+          "roomType": "engine-room",
+          "landmark": true,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 50,
+          "rewardType": "system-intel",
+          "lineCount": 17,
+          "importCount": 0,
+          "exportCount": 0,
+          "signals": [],
+          "findingsCount": 0,
+          "position": {
+            "x": 5,
+            "y": -15
+          }
+        },
+        {
+          "id": "room-scanner-tsconfig-json",
+          "name": "tsconfig.json",
+          "path": "scanner/tsconfig.json",
+          "folder": "scanner",
+          "role": "config",
+          "roomType": "control-room",
+          "landmark": true,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 45,
+          "rewardType": "system-intel",
+          "lineCount": 15,
+          "importCount": 0,
+          "exportCount": 0,
+          "signals": [],
+          "findingsCount": 0,
+          "position": {
+            "x": 10,
+            "y": -15
+          }
+        }
+      ]
+    },
+    {
+      "id": "zone-scanner-src",
+      "name": "scanner/src",
+      "path": "scanner/src",
+      "level": 2,
+      "roomCount": 2,
+      "riskCount": 0,
+      "landmarkCount": 0,
+      "position": {
+        "x": 108,
+        "y": 0
+      },
+      "rooms": [
+        {
+          "id": "room-scanner-src-cli-ts",
+          "name": "cli.ts",
+          "path": "scanner/src/cli.ts",
+          "folder": "scanner/src",
+          "role": "utility",
+          "roomType": "utility-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 2,
+          "xpValue": 31,
+          "rewardType": "scan-xp",
+          "lineCount": 62,
+          "importCount": 2,
+          "exportCount": 0,
+          "signals": [
+            "console-log"
+          ],
+          "findingsCount": 1,
+          "position": {
+            "x": 0,
+            "y": -18
+          }
+        },
+        {
+          "id": "room-scanner-src-types-ts",
+          "name": "types.ts",
+          "path": "scanner/src/types.ts",
+          "folder": "scanner/src",
+          "role": "utility",
+          "roomType": "utility-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 22,
+          "rewardType": "scan-xp",
+          "lineCount": 104,
+          "importCount": 0,
+          "exportCount": 9,
+          "signals": [],
+          "findingsCount": 0,
+          "position": {
+            "x": 5,
+            "y": -18
+          }
+        }
+      ]
+    },
+    {
+      "id": "zone-scanner-src-output",
+      "name": "scanner/src/output",
+      "path": "scanner/src/output",
+      "level": 3,
+      "roomCount": 2,
+      "riskCount": 2,
+      "landmarkCount": 0,
+      "position": {
+        "x": 126,
+        "y": 0
+      },
+      "rooms": [
+        {
+          "id": "room-scanner-src-output-writeartifacts-ts",
+          "name": "writeArtifacts.ts",
+          "path": "scanner/src/output/writeArtifacts.ts",
+          "folder": "scanner/src/output",
+          "role": "utility",
+          "roomType": "utility-room",
+          "landmark": false,
+          "riskLevel": "low",
+          "difficulty": 6,
+          "xpValue": 41,
+          "rewardType": "risk-intel",
+          "lineCount": 576,
+          "importCount": 4,
+          "exportCount": 1,
+          "signals": [
+            "jsx",
+            "large-source-room"
+          ],
+          "findingsCount": 1,
+          "position": {
+            "x": 0,
+            "y": -21
+          }
+        },
+        {
+          "id": "room-scanner-src-output-writehtmlreport-ts",
+          "name": "writeHtmlReport.ts",
+          "path": "scanner/src/output/writeHtmlReport.ts",
+          "folder": "scanner/src/output",
+          "role": "utility",
+          "roomType": "utility-room",
+          "landmark": false,
+          "riskLevel": "low",
+          "difficulty": 8,
+          "xpValue": 45,
+          "rewardType": "risk-intel",
+          "lineCount": 765,
+          "importCount": 1,
+          "exportCount": 1,
+          "signals": [
+            "jsx",
+            "large-source-room"
+          ],
+          "findingsCount": 1,
+          "position": {
+            "x": 5,
+            "y": -21
+          }
+        }
+      ]
+    },
+    {
+      "id": "zone-scanner-src-scanner",
+      "name": "scanner/src/scanner",
+      "path": "scanner/src/scanner",
+      "level": 3,
+      "roomCount": 5,
+      "riskCount": 0,
+      "landmarkCount": 0,
+      "position": {
+        "x": 144,
+        "y": 0
+      },
+      "rooms": [
+        {
+          "id": "room-scanner-src-scanner-analyzefilecontent-ts",
+          "name": "analyzeFileContent.ts",
+          "path": "scanner/src/scanner/analyzeFileContent.ts",
+          "folder": "scanner/src/scanner",
+          "role": "utility",
+          "roomType": "utility-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 2,
+          "xpValue": 32,
+          "rewardType": "scan-xp",
+          "lineCount": 116,
+          "importCount": 2,
+          "exportCount": 1,
+          "signals": [
+            "jsx",
+            "todo-or-fixme"
+          ],
+          "findingsCount": 1,
+          "position": {
+            "x": 0,
+            "y": -24
+          }
+        },
+        {
+          "id": "room-scanner-src-scanner-classifyfile-ts",
+          "name": "classifyFile.ts",
+          "path": "scanner/src/scanner/classifyFile.ts",
+          "folder": "scanner/src/scanner",
+          "role": "utility",
+          "roomType": "utility-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 22,
+          "rewardType": "scan-xp",
+          "lineCount": 106,
+          "importCount": 1,
+          "exportCount": 1,
+          "signals": [],
+          "findingsCount": 0,
+          "position": {
+            "x": 5,
+            "y": -24
+          }
+        },
+        {
+          "id": "room-scanner-src-scanner-crawlproject-ts",
+          "name": "crawlProject.ts",
+          "path": "scanner/src/scanner/crawlProject.ts",
+          "folder": "scanner/src/scanner",
+          "role": "utility",
+          "roomType": "utility-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 21,
+          "rewardType": "scan-xp",
+          "lineCount": 57,
+          "importCount": 3,
+          "exportCount": 1,
+          "signals": [
+            "jsx"
+          ],
+          "findingsCount": 0,
+          "position": {
+            "x": 10,
+            "y": -24
+          }
+        },
+        {
+          "id": "room-scanner-src-scanner-detectfindings-ts",
+          "name": "detectFindings.ts",
+          "path": "scanner/src/scanner/detectFindings.ts",
+          "folder": "scanner/src/scanner",
+          "role": "utility",
+          "roomType": "utility-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 3,
+          "xpValue": 33,
+          "rewardType": "scan-xp",
+          "lineCount": 166,
+          "importCount": 1,
+          "exportCount": 3,
+          "signals": [
+            "jsx",
+            "todo-or-fixme"
+          ],
+          "findingsCount": 1,
+          "position": {
+            "x": 15,
+            "y": -24
+          }
+        },
+        {
+          "id": "room-scanner-src-scanner-scanproject-ts",
+          "name": "scanProject.ts",
+          "path": "scanner/src/scanner/scanProject.ts",
+          "folder": "scanner/src/scanner",
+          "role": "utility",
+          "roomType": "utility-room",
+          "landmark": false,
+          "riskLevel": "none",
+          "difficulty": 1,
+          "xpValue": 21,
+          "rewardType": "scan-xp",
+          "lineCount": 97,
+          "importCount": 7,
+          "exportCount": 1,
+          "signals": [
+            "jsx"
+          ],
+          "findingsCount": 0,
+          "position": {
+            "x": 20,
+            "y": -24
+          }
+        }
+      ]
+    }
+  ]
+}
