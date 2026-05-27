@@ -47,6 +47,8 @@ async function main() {
   console.log("  .probe/route-map.md");
   console.log("  .probe/build-readiness.md");
   console.log("  .probe/ui-map.json");
+  console.log("  .probe/game-map.json");
+  console.log("  .probe/mission-brief.md");
   console.log("");
 }
 
