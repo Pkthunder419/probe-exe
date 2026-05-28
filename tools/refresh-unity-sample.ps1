@@ -1,12 +1,16 @@
 param(
-  [string]$TargetPath = "C:\Users\smief654\Desktop\ProbeExe"
+  [string]$TargetPath
 )
 
 $ErrorActionPreference = "Stop"
 
-$RepoRoot = "C:\Users\smief654\Desktop\ProbeExe"
+$RepoRoot = Split-Path $PSScriptRoot -Parent
 $ScannerRoot = Join-Path $RepoRoot "scanner"
 $UnitySamplePath = Join-Path $RepoRoot "game\Assets\StreamingAssets\probe-game-map.sample.json"
+
+if ([string]::IsNullOrWhiteSpace($TargetPath)) {
+  $TargetPath = $RepoRoot
+}
 
 Write-Host ""
 Write-Host "[PROBE UNITY] Refreshing Unity sample map..."

@@ -37,6 +37,8 @@ export async function scanProject(rootPath: string): Promise<ProjectMap> {
       importCount: analysis.importCount,
       exportCount: analysis.exportCount,
       signals: analysis.signals,
+      contentHash: file.contentHash,
+      hashSkippedReason: file.hashSkippedReason,
       xpValue: classification.xpValue + findings.length * 10 + Math.min(50, Math.floor(analysis.lineCount / 50)),
       findings
     };

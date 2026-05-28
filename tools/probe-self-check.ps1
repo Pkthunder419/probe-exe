@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$RepoRoot = "C:\Users\smief654\Desktop\ProbeExe"
+$RepoRoot = Split-Path $PSScriptRoot -Parent
 $ScannerRoot = Join-Path $RepoRoot "scanner"
 
 Write-Host ""
@@ -26,6 +26,8 @@ $Required = @(
   "$RepoRoot\.probe\file-quest-report.html",
   "$RepoRoot\.probe\game-map.json",
   "$RepoRoot\.probe\mission-brief.md",
+  "$RepoRoot\.probe\encounters.json",
+  "$RepoRoot\.probe\cleanup-plan.json",
   "$RepoRoot\game\Assets\Scripts\Core\FileQuestBootstrap.cs",
   "$RepoRoot\game\Assets\Editor\ProbeSceneBuilder.cs"
 )

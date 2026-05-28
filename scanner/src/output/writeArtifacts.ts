@@ -2,6 +2,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { Finding, ProjectMap, Room, RiskLevel } from "../types";
 import { toHtmlReport } from "./writeHtmlReport";
+import { buildEncounterOutput } from "./writeEncounterArtifacts";
 
 interface PackageJsonShape {
   scripts?: Record<string, string>;
@@ -53,16 +54,73 @@ export async function writeArtifacts(projectMap: ProjectMap): Promise<void> {
   await fs.mkdir(outputDir, { recursive: true });
 
   const packageJson = await readPackageJson(projectMap.rootPath);
+  const encounterOutput = buildEncounterOutput(projectMap);
 
-  await fs.writeFile(path.join(outputDir, "project-map.json"), JSON.stringify(projectMap, null, 2), "utf8");
-  await fs.writeFile(path.join(outputDir, "file-inventory.csv"), toCsv(projectMap.zones.flatMap((zone) => zone.rooms)), "utf8");
-  await fs.writeFile(path.join(outputDir, "project-summary.md"), toMarkdown(projectMap), "utf8");
-  await fs.writeFile(path.join(outputDir, "file-quest-report.html"), toHtmlReport(projectMap), "utf8");
-  await fs.writeFile(path.join(outputDir, "route-map.md"), toRouteMapMarkdown(projectMap), "utf8");
-  await fs.writeFile(path.join(outputDir, "build-readiness.md"), toBuildReadinessMarkdown(projectMap, packageJson), "utf8");
-  await fs.writeFile(path.join(outputDir, "ui-map.json"), JSON.stringify(toUiMap(projectMap), null, 2), "utf8");
-  await fs.writeFile(path.join(outputDir, "game-map.json"), JSON.stringify(toGameMap(projectMap), null, 2), "utf8");
-  await fs.writeFile(path.join(outputDir, "mission-brief.md"), toMissionBrief(projectMap), "utf8");
+  await fs.writeFile(
+    path.join(outputDir, "project-map.json"),
+    JSON.stringify(projectMap, null, 2),
+    "utf8"
+  );
+
+  await fs.writeFile(
+    path.join(outputDir, "file-inventory.csv"),
+    toCsv(projectMap.zones.flatMap((zone) => zone.rooms)),
+    "utf8"
+  );
+
+  await fs.writeFile(
+    path.join(outputDir, "project-summary.md"),
+    toMarkdown(projectMap),
+    "utf8"
+  );
+
+  await fs.writeFile(
+    path.join(outputDir, "file-quest-report.html"),
+    toHtmlReport(projectMap),
+    "utf8"
+  );
+
+  await fs.writeFile(
+    path.join(outputDir, "route-map.md"),
+    toRouteMapMarkdown(projectMap),
+    "utf8"
+  );
+
+  await fs.writeFile(
+    path.join(outputDir, "build-readiness.md"),
+    toBuildReadinessMarkdown(projectMap, packageJson),
+    "utf8"
+  );
+
+  await fs.writeFile(
+    path.join(outputDir, "ui-map.json"),
+    JSON.stringify(toUiMap(projectMap), null, 2),
+    "utf8"
+  );
+
+  await fs.writeFile(
+    path.join(outputDir, "game-map.json"),
+    JSON.stringify(toGameMap(projectMap), null, 2),
+    "utf8"
+  );
+
+  await fs.writeFile(
+    path.join(outputDir, "mission-brief.md"),
+    toMissionBrief(projectMap),
+    "utf8"
+  );
+
+  await fs.writeFile(
+    path.join(outputDir, "encounters.json"),
+    JSON.stringify(encounterOutput.encountersReport, null, 2),
+    "utf8"
+  );
+
+  await fs.writeFile(
+    path.join(outputDir, "cleanup-plan.json"),
+    JSON.stringify(encounterOutput.cleanupPlan, null, 2),
+    "utf8"
+  );
 }
 
 async function readPackageJson(rootPath: string): Promise<PackageJsonShape | null> {
@@ -89,6 +147,8 @@ function toCsv(rooms: Room[]): string {
     "importCount",
     "exportCount",
     "signals",
+    "contentHash",
+    "hashSkippedReason",
     "sizeBytes",
     "xpValue",
     "modifiedAt"
@@ -106,6 +166,8 @@ function toCsv(rooms: Room[]): string {
     String(room.importCount),
     String(room.exportCount),
     room.signals.join("|"),
+    room.contentHash ?? "",
+    room.hashSkippedReason ?? "",
     String(room.sizeBytes),
     String(room.xpValue),
     room.modifiedAt
@@ -118,6 +180,7 @@ function csvEscape(value: string): string {
   if (value.includes(",") || value.includes('"') || value.includes("\n")) {
     return `"${value.replaceAll('"', '""')}"`;
   }
+
   return value;
 }
 
@@ -448,6 +511,7 @@ function toMissionBrief(projectMap: ProjectMap): string {
     lines.push("- Use route-map.md to verify that important routes match the expected application flow.");
   }
   lines.push("- Use game-map.json as the Unity bridge for the playable prototype.");
+  lines.push("- Use encounters.json and cleanup-plan.json as the combat and ability bridge.");
 
   return lines.join("\n");
 }
@@ -466,6 +530,8 @@ function toRoomSummary(room: Room) {
     importCount: room.importCount,
     exportCount: room.exportCount,
     signals: room.signals,
+    contentHash: room.contentHash,
+    hashSkippedReason: room.hashSkippedReason,
     xpValue: room.xpValue
   };
 }

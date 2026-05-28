@@ -1,11 +1,15 @@
 param(
-  [string]$TargetPath = "C:\Users\smief654\Desktop\ProbeExe"
+  [string]$TargetPath
 )
 
 $ErrorActionPreference = "Stop"
 
-$RepoRoot = "C:\Users\smief654\Desktop\ProbeExe"
+$RepoRoot = Split-Path $PSScriptRoot -Parent
 $ScannerRoot = Join-Path $RepoRoot "scanner"
+
+if ([string]::IsNullOrWhiteSpace($TargetPath)) {
+  $TargetPath = $RepoRoot
+}
 
 Write-Host ""
 Write-Host "[PROBE SCAN] Target:"
@@ -37,7 +41,9 @@ $Required = @(
   "build-readiness.md",
   "ui-map.json",
   "game-map.json",
-  "mission-brief.md"
+  "mission-brief.md",
+  "encounters.json",
+  "cleanup-plan.json"
 )
 
 foreach ($file in $Required) {

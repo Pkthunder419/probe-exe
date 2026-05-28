@@ -27,6 +27,8 @@ export interface CrawledFile {
   sizeBytes: number;
   depth: number;
   modifiedAt: string;
+  contentHash?: string;
+  hashSkippedReason?: string;
 }
 
 export interface ContentAnalysis {
@@ -72,6 +74,8 @@ export interface Room {
   importCount: number;
   exportCount: number;
   signals: string[];
+  contentHash?: string;
+  hashSkippedReason?: string;
   xpValue: number;
   findings: Finding[];
 }

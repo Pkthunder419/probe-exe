@@ -49,6 +49,8 @@ async function main() {
   console.log("  .probe/ui-map.json");
   console.log("  .probe/game-map.json");
   console.log("  .probe/mission-brief.md");
+  console.log("  .probe/encounters.json");
+  console.log("  .probe/cleanup-plan.json");
   console.log("");
 }
 
@@ -59,3 +61,4 @@ main().catch((error) => {
   console.error("");
   process.exit(1);
 });
+
