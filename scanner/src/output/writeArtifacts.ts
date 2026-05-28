@@ -76,7 +76,7 @@ export async function writeArtifacts(projectMap: ProjectMap): Promise<void> {
 
   await fs.writeFile(
     path.join(outputDir, "file-quest-report.html"),
-    toHtmlReport(projectMap),
+    toHtmlReport(projectMap, encounterOutput),
     "utf8"
   );
 
@@ -639,3 +639,4 @@ function severityRank(severity: Finding["severity"]): number {
 function yesNo(value: boolean): string {
   return value ? "yes" : "no";
 }
+

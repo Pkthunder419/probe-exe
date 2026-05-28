@@ -1,9 +1,13 @@
 import type { ProjectMap, Room } from "../types";
+import type { ProbeEncounterOutput } from "./writeEncounterArtifacts";
 
-export function toHtmlReport(projectMap: ProjectMap): string {
+export function toHtmlReport(projectMap: ProjectMap, encounterOutput?: ProbeEncounterOutput): string {
   const rooms = projectMap.zones.flatMap((zone) => zone.rooms);
   const landmarkCount = rooms.filter((room) => room.landmark).length;
   const riskRooms = rooms.filter((room) => room.riskLevel !== "none");
+  const encounters = encounterOutput?.encountersReport.encounters ?? [];
+  const cleanupActions = encounterOutput?.cleanupPlan.actions ?? [];
+
   const safeDataJson = JSON.stringify({
     summary: projectMap.summary,
     rootPath: projectMap.rootPath,
@@ -15,7 +19,20 @@ export function toHtmlReport(projectMap: ProjectMap): string {
       level: zone.level,
       roomCount: zone.rooms.length
     })),
-    rooms
+    rooms,
+    encounters,
+    cleanupActions,
+    encounterSummary: encounterOutput?.encountersReport.summary ?? {
+      encountersFound: 0,
+      cleanupActionsPlanned: 0,
+      mirrorGoblins: 0,
+      bossRooms: 0,
+      vaultWraiths: 0,
+      codeGremlins: 0,
+      tangleHydras: 0,
+      emptyShells: 0
+    },
+    safetyMode: encounterOutput?.cleanupPlan.safetyMode ?? "observe-and-plan"
   }).replaceAll("<", "\\u003c").replaceAll("</script", "<\\/script");
 
   return `<!doctype html>
@@ -165,10 +182,28 @@ export function toHtmlReport(projectMap: ProjectMap): string {
       white-space: nowrap;
     }
 
-    .toggle.active {
+    .toggle.active,
+    .tab.active {
       border-color: rgba(124, 255, 155, 0.75);
       color: var(--green);
       box-shadow: 0 0 12px rgba(124, 255, 155, 0.12);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      background: rgba(11,16,32,0.96);
+      border: 1px solid rgba(93, 230, 255, 0.35);
+      color: var(--muted);
+      padding: 10px 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 12px;
     }
 
     .layout {
@@ -384,27 +419,40 @@ export function toHtmlReport(projectMap: ProjectMap): string {
       margin-top: 3px;
     }
 
-    .finding {
+    .finding,
+    .encounter-card,
+    .action-card {
       border: 1px solid rgba(93, 230, 255, 0.18);
       background: rgba(11,16,32,0.7);
       padding: 10px;
       margin-top: 10px;
     }
 
-    .finding .sev {
+    .encounter-card {
+      border-color: rgba(255, 209, 102, 0.35);
+      box-shadow: 0 0 16px rgba(255, 209, 102, 0.06);
+    }
+
+    .action-card {
+      border-color: rgba(124, 255, 155, 0.28);
+    }
+
+    .sev {
       color: var(--amber);
       font-size: 11px;
       text-transform: uppercase;
       margin-bottom: 6px;
     }
 
-    .finding .find-title {
+    .find-title,
+    .enc-title,
+    .action-title {
       color: var(--text);
       font-size: 13px;
       margin-bottom: 6px;
     }
 
-    .finding .msg {
+    .msg {
       color: var(--muted);
       font-size: 11px;
       line-height: 1.45;
@@ -433,6 +481,10 @@ export function toHtmlReport(projectMap: ProjectMap): string {
       color: var(--green);
       font-size: 14px;
       margin-top: 3px;
+    }
+
+    .hidden {
+      display: none;
     }
 
     .footer {
@@ -467,46 +519,89 @@ export function toHtmlReport(projectMap: ProjectMap): string {
         <h1 class="title">PROBE.EXE: FILE QUEST</h1>
         <p class="subtitle">DISCOVERY RUN // ${escapeHtml(projectMap.rootPath)}</p>
         <p class="subtitle">SCAN TIME // ${escapeHtml(projectMap.scannedAt)}</p>
+        <p class="subtitle">SAFETY MODE // ${escapeHtml(encounterOutput?.cleanupPlan.safetyMode ?? "observe-and-plan")}</p>
       </div>
       <div class="stats">
         ${stat("FILES", projectMap.summary.filesScanned)}
-        ${stat("ZONES", projectMap.summary.foldersScanned)}
         ${stat("RISKS", projectMap.summary.risksFound)}
+        ${stat("ENCOUNTERS", encounters.length)}
         ${stat("LEVEL", projectMap.summary.level)}
       </div>
     </section>
 
-    <section class="controls">
-      <input id="searchInput" class="control" placeholder="Search rooms, paths, signals..." />
-      <select id="zoneSelect" class="control-select"></select>
-      <select id="roleSelect" class="control-select">
-        <option value="all">All roles</option>
-      </select>
-      <button id="riskOnly" class="toggle" type="button">Risk only</button>
-      <button id="landmarksOnly" class="toggle" type="button">Landmarks only</button>
+    <section class="tabs">
+      <button class="tab active" id="tabMap" type="button">Map View</button>
+      <button class="tab" id="tabEncounters" type="button">Encounter Codex</button>
+      <button class="tab" id="tabCleanup" type="button">Cleanup Plan</button>
     </section>
 
-    <section class="layout">
-      <div class="viewport">
-        <div class="orb-row">
-          <div class="orb"></div>
-          <div>VISION ORB ONLINE // ${projectMap.summary.xpEarned} XP // ${landmarkCount} LANDMARKS // ${riskRooms.length} RISK ROOMS</div>
+    <section id="mapPanel">
+      <section class="controls">
+        <input id="searchInput" class="control" placeholder="Search rooms, paths, signals..." />
+        <select id="zoneSelect" class="control-select"></select>
+        <select id="roleSelect" class="control-select">
+          <option value="all">All roles</option>
+        </select>
+        <button id="riskOnly" class="toggle" type="button">Risk only</button>
+        <button id="landmarksOnly" class="toggle" type="button">Landmarks only</button>
+      </section>
+
+      <section class="layout">
+        <div class="viewport">
+          <div class="orb-row">
+            <div class="orb"></div>
+            <div>VISION ORB ONLINE // ${projectMap.summary.xpEarned} XP // ${landmarkCount} LANDMARKS // ${riskRooms.length} RISK ROOMS // ${encounters.length} ENCOUNTERS</div>
+          </div>
+
+          <div id="renderStatus" class="render-status"></div>
+          <div id="zoneContainer"></div>
         </div>
 
-        <div id="renderStatus" class="render-status"></div>
-        <div id="zoneContainer"></div>
-      </div>
+        <aside class="side">
+          <div class="panel-title">Room Inspector</div>
+          <div id="roomInspector">
+            <div class="inspector-value">Select a room to inspect file data.</div>
+          </div>
+        </aside>
+      </section>
+    </section>
 
-      <aside class="side">
-        <div class="panel-title">Room Inspector</div>
-        <div id="roomInspector">
-          <div class="inspector-value">Select a room to inspect file data.</div>
+    <section id="encounterPanel" class="hidden">
+      <section class="layout">
+        <div class="viewport">
+          <div class="orb-row">
+            <div class="orb"></div>
+            <div>ENCOUNTER CODEX // ${encounters.length} ENEMIES DETECTED // POWERS READY</div>
+          </div>
+          <div id="encounterContainer"></div>
         </div>
-      </aside>
+        <aside class="side">
+          <div class="panel-title">Enemy Breakdown</div>
+          <div id="encounterSummary"></div>
+        </aside>
+      </section>
+    </section>
+
+    <section id="cleanupPanel" class="hidden">
+      <section class="layout">
+        <div class="viewport">
+          <div class="orb-row">
+            <div class="orb"></div>
+            <div>CLEANUP PLAN // ${cleanupActions.length} PLANNED ABILITIES // NON-DESTRUCTIVE</div>
+          </div>
+          <div id="cleanupContainer"></div>
+        </div>
+        <aside class="side">
+          <div class="panel-title">Safety Protocol</div>
+          <div class="inspector-value">Cleanup actions are plans only. Probe.exe does not delete, move, or rewrite files from this report.</div>
+          <div class="inspector-label">Safety Mode</div>
+          <div class="inspector-value">${escapeHtml(encounterOutput?.cleanupPlan.safetyMode ?? "observe-and-plan")}</div>
+        </aside>
+      </section>
     </section>
 
     <div class="footer">
-      Probe.exe generated this local report from read-only scan data. No project files were modified.
+      Probe.exe generated this local report from read-only scan data. Cleanup actions are planned only.
     </div>
   </main>
 
@@ -529,6 +624,25 @@ export function toHtmlReport(projectMap: ProjectMap): string {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+    }
+
+    function setTab(name) {
+      const panels = {
+        map: document.getElementById("mapPanel"),
+        encounters: document.getElementById("encounterPanel"),
+        cleanup: document.getElementById("cleanupPanel")
+      };
+
+      const tabs = {
+        map: document.getElementById("tabMap"),
+        encounters: document.getElementById("tabEncounters"),
+        cleanup: document.getElementById("tabCleanup")
+      };
+
+      Object.keys(panels).forEach(function (key) {
+        panels[key].classList.toggle("hidden", key !== name);
+        tabs[key].classList.toggle("active", key === name);
+      });
     }
 
     function roomMatches(room) {
@@ -585,7 +699,10 @@ export function toHtmlReport(projectMap: ProjectMap): string {
         return;
       }
 
-      container.innerHTML = groups.map(([zoneName, rooms]) => {
+      container.innerHTML = groups.map(function (entry) {
+        const zoneName = entry[0];
+        const rooms = entry[1];
+
         return (
           '<section class="zone">' +
             '<div class="zone-header">' +
@@ -610,7 +727,7 @@ export function toHtmlReport(projectMap: ProjectMap): string {
       const riskClass = room.riskLevel !== "none" ? " risk-" + room.riskLevel : "";
       const landmarkClass = room.landmark ? " landmark" : "";
       const selectedClass = room.path === state.selectedPath ? " selected" : "";
-      const signalBadges = (room.signals || []).slice(0, 2).map((signal) => {
+      const signalBadges = (room.signals || []).slice(0, 2).map(function (signal) {
         return '<span class="badge signal-badge">' + escapeHtmlClient(signal) + '</span>';
       }).join("");
 
@@ -634,6 +751,10 @@ export function toHtmlReport(projectMap: ProjectMap): string {
       state.selectedPath = path;
       markSelected();
 
+      const linkedEncounters = PROBE_DATA.encounters.filter(function (encounter) {
+        return encounter.evidence && encounter.evidence.paths && encounter.evidence.paths.includes(room.path);
+      });
+
       const signals = room.signals && room.signals.length
         ? room.signals.map((signal) => '<span class="badge signal-badge">' + escapeHtmlClient(signal) + '</span>').join("")
         : '<div class="inspector-value">No special source signals detected.</div>';
@@ -648,6 +769,12 @@ export function toHtmlReport(projectMap: ProjectMap): string {
             '</div>'
           )).join("")
         : '<div class="finding"><div class="msg">No findings detected inside this room.</div></div>';
+
+      const encounterHtml = linkedEncounters.length
+        ? linkedEncounters.map(function (encounter) {
+            return '<div class="encounter-card"><div class="sev">' + escapeHtmlClient(encounter.enemyType) + ' // ' + escapeHtmlClient(encounter.severity) + '</div><div class="enc-title">' + escapeHtmlClient(encounter.title) + '</div><div class="msg">' + escapeHtmlClient(encounter.description) + '</div></div>';
+          }).join("")
+        : '<div class="finding"><div class="msg">No enemy encounters linked to this room.</div></div>';
 
       panel.innerHTML =
         '<div class="inspector-label">File</div>' +
@@ -665,10 +792,10 @@ export function toHtmlReport(projectMap: ProjectMap): string {
         '<div class="inspector-value">' + escapeHtmlClient(room.riskLevel) + '</div>' +
         '<div class="inspector-label">XP Value</div>' +
         '<div class="inspector-value">' + escapeHtmlClient(room.xpValue) + '</div>' +
-        '<div class="inspector-label">Size</div>' +
-        '<div class="inspector-value">' + Math.round(Number(room.sizeBytes) / 1024 * 10) / 10 + ' KB</div>' +
         '<div class="inspector-label">Signals</div>' +
         '<div>' + signals + '</div>' +
+        '<div class="inspector-label">Encounters</div>' +
+        encounterHtml +
         '<div class="inspector-label">Findings</div>' +
         findingsHtml;
     }
@@ -683,12 +810,95 @@ export function toHtmlReport(projectMap: ProjectMap): string {
       });
     }
 
+    function renderEncounters() {
+      const container = document.getElementById("encounterContainer");
+      const summary = document.getElementById("encounterSummary");
+
+      summary.innerHTML =
+        '<div class="mini-grid">' +
+          '<div class="mini-stat"><div>Total</div><div>' + escapeHtmlClient(PROBE_DATA.encounterSummary.encountersFound || 0) + '</div></div>' +
+          '<div class="mini-stat"><div>Actions</div><div>' + escapeHtmlClient(PROBE_DATA.encounterSummary.cleanupActionsPlanned || 0) + '</div></div>' +
+          '<div class="mini-stat"><div>Safety</div><div>Plan</div></div>' +
+        '</div>' +
+        '<div class="inspector-label">Enemy Types</div>' +
+        '<div class="inspector-value">Mirror: ' + escapeHtmlClient(PROBE_DATA.encounterSummary.mirrorGoblins || 0) + '</div>' +
+        '<div class="inspector-value">Boss: ' + escapeHtmlClient(PROBE_DATA.encounterSummary.bossRooms || 0) + '</div>' +
+        '<div class="inspector-value">Vault: ' + escapeHtmlClient(PROBE_DATA.encounterSummary.vaultWraiths || 0) + '</div>' +
+        '<div class="inspector-value">Gremlin: ' + escapeHtmlClient(PROBE_DATA.encounterSummary.codeGremlins || 0) + '</div>' +
+        '<div class="inspector-value">Hydra: ' + escapeHtmlClient(PROBE_DATA.encounterSummary.tangleHydras || 0) + '</div>' +
+        '<div class="inspector-value">Shell: ' + escapeHtmlClient(PROBE_DATA.encounterSummary.emptyShells || 0) + '</div>';
+
+      if (!PROBE_DATA.encounters.length) {
+        container.innerHTML = '<section class="zone"><div class="zone-title">NO ENCOUNTERS DETECTED</div></section>';
+        return;
+      }
+
+      container.innerHTML = PROBE_DATA.encounters.map(function (encounter) {
+        const powers = (encounter.suggestedPowers || []).map(function (power) {
+          return '<span class="badge">' + escapeHtmlClient(power) + '</span>';
+        }).join("");
+
+        const paths = (encounter.evidence && encounter.evidence.paths ? encounter.evidence.paths : []).slice(0, 6).map(function (path) {
+          return '<div class="msg">' + escapeHtmlClient(path) + '</div>';
+        }).join("");
+
+        return (
+          '<div class="encounter-card">' +
+            '<div class="sev">' + escapeHtmlClient(encounter.enemyType) + ' // ' + escapeHtmlClient(encounter.severity) + ' // XP ' + escapeHtmlClient(encounter.xpReward) + '</div>' +
+            '<div class="enc-title">' + escapeHtmlClient(encounter.title) + '</div>' +
+            '<div class="msg">' + escapeHtmlClient(encounter.description) + '</div>' +
+            '<div class="inspector-label">Zone</div>' +
+            '<div class="inspector-value">' + escapeHtmlClient(encounter.zone) + '</div>' +
+            '<div class="inspector-label">Evidence</div>' +
+            paths +
+            '<div class="inspector-label">Suggested Powers</div>' +
+            '<div>' + powers + '</div>' +
+          '</div>'
+        );
+      }).join("");
+    }
+
+    function renderCleanup() {
+      const container = document.getElementById("cleanupContainer");
+
+      if (!PROBE_DATA.cleanupActions.length) {
+        container.innerHTML = '<section class="zone"><div class="zone-title">NO CLEANUP ACTIONS PLANNED</div></section>';
+        return;
+      }
+
+      container.innerHTML = PROBE_DATA.cleanupActions.map(function (action) {
+        const targets = (action.targetPaths || []).slice(0, 8).map(function (path) {
+          return '<div class="msg">' + escapeHtmlClient(path) + '</div>';
+        }).join("");
+
+        return (
+          '<div class="action-card">' +
+            '<div class="sev">' + escapeHtmlClient(action.abilityName) + ' // ' + escapeHtmlClient(action.risk) + ' // ' + escapeHtmlClient(action.status) + '</div>' +
+            '<div class="action-title">' + escapeHtmlClient(action.title) + '</div>' +
+            '<div class="msg">' + escapeHtmlClient(action.reason) + '</div>' +
+            '<div class="inspector-label">Action Type</div>' +
+            '<div class="inspector-value">' + escapeHtmlClient(action.type) + '</div>' +
+            '<div class="inspector-label">Targets</div>' +
+            targets +
+            '<div class="inspector-label">Requires Confirmation</div>' +
+            '<div class="inspector-value">' + escapeHtmlClient(action.requiresConfirmation) + '</div>' +
+            '<div class="inspector-label">Reversible</div>' +
+            '<div class="inspector-value">' + escapeHtmlClient(action.reversible) + '</div>' +
+          '</div>'
+        );
+      }).join("");
+    }
+
     function setupControls() {
       const zoneSelect = document.getElementById("zoneSelect");
       const roleSelect = document.getElementById("roleSelect");
       const searchInput = document.getElementById("searchInput");
       const riskOnly = document.getElementById("riskOnly");
       const landmarksOnly = document.getElementById("landmarksOnly");
+
+      document.getElementById("tabMap").addEventListener("click", function () { setTab("map"); });
+      document.getElementById("tabEncounters").addEventListener("click", function () { setTab("encounters"); });
+      document.getElementById("tabCleanup").addEventListener("click", function () { setTab("cleanup"); });
 
       zoneSelect.innerHTML = '<option value="all">All zones</option>' + PROBE_DATA.zones
         .sort((a, b) => a.name.localeCompare(b.name))
@@ -736,6 +946,8 @@ export function toHtmlReport(projectMap: ProjectMap): string {
     document.addEventListener("DOMContentLoaded", function () {
       setupControls();
       render();
+      renderEncounters();
+      renderCleanup();
 
       const firstRoom = getFilteredRooms()[0];
       if (firstRoom) inspectRoom(firstRoom.path);
