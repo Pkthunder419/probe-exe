@@ -16,3 +16,6 @@ Logs/
 UserSettings/
 *.csproj
 *.sln
+
+# Unity / IDE generated solution files
+*.slnx
